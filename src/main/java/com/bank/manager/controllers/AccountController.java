@@ -16,11 +16,13 @@ public class AccountController {
     @Autowired
     CustomerRepository customerRepository;
 
+    //create accountType enum
     @PostMapping("/create")
     public String create(@RequestBody Account account) {
         if (customerRepository.existsById(account.getCustomerId())) {
             repository.save(new Account(account.getAccountType(), account.getCustomerId(), account.getAccountBalance()));
             //if account of same type exists already for the same customer, don't create
+            //add 3.5% function
             return "account is created";
         } else
             return "customer doesn't exist";
@@ -35,4 +37,7 @@ public class AccountController {
     public List<Account> fetchDataByEmployeeName(@PathVariable long id) {
         return repository.findByCustomerId(id);
     }
+
+    //add account transfer for specific types of accounts only function
+    //print account statement from date to date
 }

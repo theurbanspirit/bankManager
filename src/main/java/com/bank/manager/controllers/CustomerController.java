@@ -62,4 +62,8 @@ public class CustomerController {
 
         return bCryptPasswordEncoder.encode(String.join("", username, passwordPostFix));
     }
+
+    //add update customer kyc function
+    //add delete customer function
+    //add get all customer account details given gcustomer name/id
 }

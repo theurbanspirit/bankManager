@@ -43,5 +43,5 @@ public class EmployeeController {
         return bCryptPasswordEncoder.encode(String.join("", username, passwordPostFix));
     }
 
-    //add delete
+    //add delete employee function
 }
