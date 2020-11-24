@@ -1,5 +1,6 @@
 package com.bank.manager.security;
 
+import com.auth0.jwt.JWT;
 import com.bank.manager.models.AppUser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -18,9 +19,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import com.auth0.jwt.JWT;
 import static com.auth0.jwt.algorithms.Algorithm.HMAC512;
 import static com.bank.manager.security.SecurityConstants.*;
 
@@ -55,7 +54,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     protected void successfulAuthentication(HttpServletRequest req,
                                             HttpServletResponse res,
                                             FilterChain chain,
-                                            Authentication auth)  {
+                                            Authentication auth) {
 
         log.info("fir auth hua {}", auth.getAuthorities());
         List<String> authorities = new ArrayList<>();

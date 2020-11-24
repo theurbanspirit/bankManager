@@ -35,7 +35,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             throw new UsernameNotFoundException(username);
         }
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
-        grantedAuthorities.add(new SimpleGrantedAuthority(ROLE_PREFIX+appUser.getRole().toString()));
+        grantedAuthorities.add(new SimpleGrantedAuthority(ROLE_PREFIX + appUser.getRole().toString()));
         log.info("the logged in user is {} {} {}", appUser.getUsername(), appUser.getPassword(), grantedAuthorities);
         return new User(appUser.getUsername(), appUser.getPassword(), grantedAuthorities);
     }

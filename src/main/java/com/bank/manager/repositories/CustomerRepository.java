@@ -9,8 +9,13 @@ import java.util.List;
 @Repository
 public interface CustomerRepository extends CrudRepository<Customer, Long> {
 
-    List<Customer> findByCustomerName(String customerName);
+    Customer findByCustomerName(String customerName);
+
+    boolean existsByCustomerName(String customerName);
 
     List<Customer> findByContactEmployeeId(long contactEmployeeId);
+
+    Customer findByCustomerId(long customerId);
+
 
 }

@@ -39,9 +39,16 @@ public class EmployeeController {
         return repository.findByEmployeeName(name);
     }
 
+    @RequestMapping("/delete/{id}")
+    public String deleteEmployee(@PathVariable long id){
+        if(!userRepository.existsById(id))
+            return "Employee doesn't exist for given id. Try another id";
+        repository.deleteById(id);
+        userRepository.deleteByUsername(repository.findByEmployeeId(id).getEmployeeName());
+        return "Employee deleted";
+    }
+
     public String createPassword(String username) {
         return bCryptPasswordEncoder.encode(String.join("", username, passwordPostFix));
     }
-
-    //add delete employee function
 }

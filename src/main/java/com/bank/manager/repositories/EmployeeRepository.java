@@ -9,4 +9,6 @@ public interface EmployeeRepository extends CrudRepository<Employee, Long> {
 
     Employee findByEmployeeName(String employeeName);
 
+    Employee findByEmployeeId(long id);
+
 }

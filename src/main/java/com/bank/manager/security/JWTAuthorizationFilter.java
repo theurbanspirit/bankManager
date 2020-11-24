@@ -52,7 +52,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
                     .build().verify(token.replace(TOKEN_PREFIX, ""))
                     .getClaim("authorities").asString().split(",");
             List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
-            for(String authority :authorities){
+            for (String authority : authorities) {
                 grantedAuthorities.add(new SimpleGrantedAuthority(authority));
             }
             if (user != null) {
