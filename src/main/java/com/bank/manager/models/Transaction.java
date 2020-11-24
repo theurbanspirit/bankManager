@@ -21,6 +21,7 @@ public class Transaction implements Serializable {
     private Date date;
 
     @Column(name = "accountId")
+    private long accountId;
 
     public long getAccountId() {
         return accountId;
@@ -29,8 +30,6 @@ public class Transaction implements Serializable {
     public void setAccountId(long accountId) {
         this.accountId = accountId;
     }
-
-    private long accountId;
 
     public long getTransactionId() {
         return transactionId;
