@@ -29,18 +29,18 @@ public class TransactionController {
 
     @PreAuthorize("hasRole('CUSTOMER')")
     @PostMapping("/create")
-    public String create(@RequestBody Transaction transaction) {
-        if (customerRepository.existsById(transaction.getCustomerId()) &&
-                accountRepository.existsById(transaction.getAccountId())) {
-            Account account = accountRepository.findByAccountId(transaction.getAccountId());
-            if (account.getAccountBalance() + transaction.getValue() < 0)
+    public String create(@RequestBody Transaction transaction, Authentication authentication) {
+        if (accountRepository.findCustomerAccountByAccountType(customerRepository.findByCustomerName(authentication.getName()).getCustomerId(), AccountType.savings.toString())==null) {
+            return "customer Savings Account not found";
+        }
+        Account account = accountRepository.findCustomerAccountByAccountType(customerRepository.findByCustomerName(authentication.getName()).getCustomerId(), AccountType.savings.toString());
+        if (account.getAccountBalance() + transaction.getValue() < 0)
                 return "Sorry, insufficient balance";
             repository.save(new Transaction(transaction.getValue(), transaction.getCustomerId(), transaction.getAccountId()));
             account.setAccountBalance(account.getAccountBalance() + transaction.getValue());
             accountRepository.save(account);
             return "Transaction is created";
             //restrict transactions only to savings account
-        } else return "customer Account not found";
     }
 
     @PreAuthorize("permitAll()")
@@ -51,10 +51,10 @@ public class TransactionController {
 
     @PreAuthorize("hasRole('CUSTOMER')")
     @RequestMapping("/getLastTen")
-    public List<Transaction> fetchDataByTransactionName(@PathVariable long id) {
+    public List<Transaction> fetchDataByTransactionName(Authentication authentication) {
         Pageable sortedByTransactionIdDesc =
                 PageRequest.of(0, 10, Sort.by("transactionId").descending());
-        return repository.findAllByCustomerId(id, sortedByTransactionIdDesc);
+        return repository.findAllByCustomerId(customerRepository.findByCustomerName(authentication.getName()).getCustomerId(), sortedByTransactionIdDesc);
     }
 
     @PreAuthorize("hasRole('CUSTOMER')")
@@ -74,9 +74,9 @@ public class TransactionController {
         if (senderAcct.getAccountBalance() - amount < 0)
             return "Sorry, insufficient Balance. Transfer restricted";
         //sender transaction
-        create(new Transaction(amount * -1, senderAcct.getCustomerId(), senderAcct.getAccountId()));
+        create(new Transaction(amount * -1, senderAcct.getCustomerId(), senderAcct.getAccountId()), authentication);
         //receiver transaction
-        create(new Transaction(amount, receiverAcct.getCustomerId(), receiverAcct.getAccountId()));
+        create(new Transaction(amount, receiverAcct.getCustomerId(), receiverAcct.getAccountId()), authentication);
 
         return String.format("%f transferred to %s . New balance is %f", amount, toAccount, senderAcct.getAccountBalance());
     }
