@@ -11,13 +11,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @ComponentScan("com.bank.manager.*")
 @PropertySource({"classpath:application.properties"})
 public class ManagerApplication {
-	@Bean
-	public BCryptPasswordEncoder bCryptPasswordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
+    @Bean
+    public BCryptPasswordEncoder bCryptPasswordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
-	public static void main(String[] args) {
-		SpringApplication.run(ManagerApplication.class, args);
-	}
-
+    public static void main(String[] args) {
+        SpringApplication.run(ManagerApplication.class, args);
+    }
 }

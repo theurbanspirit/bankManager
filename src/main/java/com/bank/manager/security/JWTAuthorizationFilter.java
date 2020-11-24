@@ -5,6 +5,8 @@ import com.auth0.jwt.algorithms.Algorithm;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
@@ -13,6 +15,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.bank.manager.security.SecurityConstants.*;
 
@@ -34,6 +38,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
         }
         UsernamePasswordAuthenticationToken authentication = getAuthentication(req);
         SecurityContextHolder.getContext().setAuthentication(authentication);
+        log.info("authorization filter {} ", authentication);
         chain.doFilter(req, resp);
     }
 
@@ -43,9 +48,15 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
             String user = JWT.require(Algorithm.HMAC512(SECRET.getBytes()))
                     .build().verify(token.replace(TOKEN_PREFIX, ""))
                     .getSubject();
-
+            String[] authorities = JWT.require(Algorithm.HMAC512(SECRET.getBytes()))
+                    .build().verify(token.replace(TOKEN_PREFIX, ""))
+                    .getClaim("authorities").asString().split(",");
+            List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
+            for (String authority : authorities) {
+                grantedAuthorities.add(new SimpleGrantedAuthority(authority));
+            }
             if (user != null) {
-                return new UsernamePasswordAuthenticationToken(user, null);
+                return new UsernamePasswordAuthenticationToken(user, null, grantedAuthorities);
             }
             return null;
         }

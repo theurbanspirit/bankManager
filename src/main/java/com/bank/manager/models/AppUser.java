@@ -12,13 +12,13 @@ public class AppUser implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long userId;
 
-    @Column(name = "username")
+    @Column(name = "username", nullable = false)
     private String username;
 
     @Column(name = "password")
     private String password;
 
-    @Column(name = "role")
+    @Column(name = "role", nullable = false)
     @Enumerated(EnumType.STRING)
     private Role role;
 
