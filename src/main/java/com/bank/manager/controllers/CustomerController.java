@@ -14,8 +14,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @Slf4j
 @RestController
 @PreAuthorize("hasRole('EMPLOYEE') or hasRole('ADMIN')")
@@ -45,8 +43,8 @@ public class CustomerController {
                 SecurityContextHolder.getContext().getAuthentication().getName())
                 .getEmployeeId();
         repository.save(new Customer(customer.getCustomerName(), customer.getCustomerAddress(), customer.getCustomerEmail(), contactEmployeeId));
-        if(userRepository.existsByUsername(customer.getCustomerName())){
-            return "username already exists please another variation of the name";
+        if (userRepository.existsByUsername(customer.getCustomerName())) {
+            return "username already exists please provide another variation of the name";
         }
         userRepository.save(new AppUser(customer.getCustomerName(), createPassword(customer.getCustomerName()), Role.CUSTOMER));
         return customer.toString();
@@ -63,23 +61,23 @@ public class CustomerController {
     }
 
     @PostMapping("/updateKyc/{id}")
-    public String updateCustomerKyc(@PathVariable long id, @RequestBody Customer customer){
-        if(userRepository.existsByUsername(customer.getCustomerName())){
+    public String updateCustomerKyc(@PathVariable long id, @RequestBody Customer customer) {
+        if (userRepository.existsByUsername(customer.getCustomerName())) {
             return "username already exists please another variation of the name";
         }
-        if(repository.existsById(id)){
+        if (repository.existsById(id)) {
             AppUser oldUser = userRepository.findByUsername(repository.findByCustomerId(id).getCustomerName());
             oldUser.setUsername(customer.getCustomerName());
             oldUser.setPassword(createPassword(customer.getCustomerName()));
             userRepository.save(oldUser);
             repository.save(customer);
-            }
+        }
         return "updated customer kyc";
     }
 
     @RequestMapping("/delete/{id}")
-    public String deleteCustomer(@PathVariable long id){
-        if(!repository.existsById(id))
+    public String deleteCustomer(@PathVariable long id) {
+        if (!repository.existsById(id))
             return "Sorry, customer not found. Please try another id";
         //delete customer
         repository.deleteById(id);

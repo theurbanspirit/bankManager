@@ -1,4 +1,4 @@
-package com.bank.manager.RequestBodyTypes;
+package com.bank.manager.requestBodyTypes;
 
 public class AccountStatementQuery {
 

@@ -15,5 +15,5 @@ public interface TransactionRepository extends PagingAndSortingRepository<Transa
     List<Transaction> findAllByCustomerId(long customerId, Pageable pageable);
 
     @Query("select t from transaction t where date >= :fromDate and date<=:toDate and customerId=:customerId and accountType='savings' order by date desc")
-    List<Transaction> getAccountStatement(@Param("fromDate") String fromDate, @Param("toDate") String toDate, @Param("customerId") long customerId );
+    List<Transaction> getAccountStatement(@Param("fromDate") String fromDate, @Param("toDate") String toDate, @Param("customerId") long customerId);
 }

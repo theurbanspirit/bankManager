@@ -16,7 +16,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/bankManager/transaction")
@@ -34,7 +33,7 @@ public class TransactionController {
         if (customerRepository.existsById(transaction.getCustomerId()) &&
                 accountRepository.existsById(transaction.getAccountId())) {
             Account account = accountRepository.findByAccountId(transaction.getAccountId());
-            if(account.getAccountBalance()+transaction.getValue()<0)
+            if (account.getAccountBalance() + transaction.getValue() < 0)
                 return "Sorry, insufficient balance";
             repository.save(new Transaction(transaction.getValue(), transaction.getCustomerId(), transaction.getAccountId()));
             account.setAccountBalance(account.getAccountBalance() + transaction.getValue());
@@ -60,24 +59,24 @@ public class TransactionController {
 
     @PreAuthorize("hasRole('CUSTOMER')")
     @RequestMapping("/transfer/{toAccount}")
-    public String transferToAccount(@PathVariable String toAccount, @RequestBody float amount, Authentication authentication){
+    public String transferToAccount(@PathVariable String toAccount, @RequestBody float amount, Authentication authentication) {
         //search if account exists
-        if(!customerRepository.existsByCustomerName(toAccount)){
+        if (!customerRepository.existsByCustomerName(toAccount)) {
             return "Receiver doesn't exist";
         }
-        if(amount<0)
+        if (amount < 0)
             return "Please provide positive amount to transfer";
         String senderName = authentication.getName();
         Customer sender = customerRepository.findByCustomerName(senderName);
         Customer receiver = customerRepository.findByCustomerName(toAccount);
         Account senderAcct = accountRepository.findCustomerAccountByAccountType(sender.getCustomerId(), AccountType.savings.toString());
         Account receiverAcct = accountRepository.findCustomerAccountByAccountType(receiver.getCustomerId(), AccountType.savings.toString());
-        if(senderAcct.getAccountBalance()-amount<0)
+        if (senderAcct.getAccountBalance() - amount < 0)
             return "Sorry, insufficient Balance. Transfer restricted";
         //sender transaction
-        create(new Transaction(amount*-1, senderAcct.getCustomerId(), senderAcct.getAccountId()));
+        create(new Transaction(amount * -1, senderAcct.getCustomerId(), senderAcct.getAccountId()));
         //receiver transaction
-        create(new Transaction(amount, receiverAcct.getCustomerId(),  receiverAcct.getAccountId()));
+        create(new Transaction(amount, receiverAcct.getCustomerId(), receiverAcct.getAccountId()));
 
         return String.format("%f transferred to %s . New balance is %f", amount, toAccount, senderAcct.getAccountBalance());
     }

@@ -1,8 +1,6 @@
 package com.bank.manager.repositories;
 
-import com.bank.manager.enums.AccountType;
 import com.bank.manager.models.Account;
-import com.bank.manager.models.Customer;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;

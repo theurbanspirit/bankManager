@@ -40,8 +40,8 @@ public class EmployeeController {
     }
 
     @RequestMapping("/delete/{id}")
-    public String deleteEmployee(@PathVariable long id){
-        if(!userRepository.existsById(id))
+    public String deleteEmployee(@PathVariable long id) {
+        if (!userRepository.existsById(id))
             return "Employee doesn't exist for given id. Try another id";
         repository.deleteById(id);
         userRepository.deleteByUsername(repository.findByEmployeeId(id).getEmployeeName());

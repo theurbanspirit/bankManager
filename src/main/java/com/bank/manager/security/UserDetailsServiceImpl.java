@@ -22,7 +22,7 @@ import static com.bank.manager.security.SecurityConstants.ROLE_PREFIX;
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Autowired
-    private AppUserRepository userRepository;
+    private final AppUserRepository userRepository;
 
     public UserDetailsServiceImpl(AppUserRepository userRepository) {
         this.userRepository = userRepository;
