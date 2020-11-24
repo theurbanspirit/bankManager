@@ -1,4 +1,6 @@
 # bankManager
+PostMan Collection : 
+https://www.getpostman.com/collections/a5377c71c002e7a74194
 
 1. Create an admin using the 'createFirstAdmin' request from the postman collection.
 Please use this request only to create the first admin in the database as this doesn't need any authorization and is just for testing purpose. 
