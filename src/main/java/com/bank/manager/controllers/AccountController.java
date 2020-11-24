@@ -36,6 +36,8 @@ public class AccountController {
             if (repository.existsCustomerIdByAccountType(account.getCustomerId(), account.getAccountType().toString())) {
                 return "account already exists for this customer";
             }
+            if(account.getAccountBalance()<0)
+                return "account balance cannot be negative";
             repository.save(new Account(account.getAccountType(), account.getCustomerId(), account.getAccountBalance()));
             return "account is created";
         } else
