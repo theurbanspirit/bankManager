@@ -1,5 +1,7 @@
 package com.bank.manager.models;
 
+import com.bank.manager.enums.AccountType;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -11,7 +13,8 @@ public class Account implements Serializable {
     private long accountId;
 
     @Column(name = "accountType")
-    private String accountType;
+    @Enumerated(EnumType.STRING)
+    private AccountType accountType;
 
     @Column(name = "customerId")
     private long customerId;
@@ -27,11 +30,11 @@ public class Account implements Serializable {
         this.accountId = accountId;
     }
 
-    public String getAccountType() {
+    public AccountType getAccountType() {
         return accountType;
     }
 
-    public void setAccountType(String accountType) {
+    public void setAccountType(AccountType accountType) {
         this.accountType = accountType;
     }
 
@@ -54,7 +57,7 @@ public class Account implements Serializable {
     protected Account() {
     }
 
-    public Account(String accountType, long customerId, float accountBalance) {
+    public Account(AccountType accountType, long customerId, float accountBalance) {
         this.accountType = accountType;
         this.customerId = customerId;
         this.accountBalance = accountBalance;
