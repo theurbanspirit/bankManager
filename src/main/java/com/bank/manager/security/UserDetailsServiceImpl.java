@@ -12,8 +12,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
-import java.util.Collection;
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.bank.manager.security.SecurityConstants.ROLE_PREFIX;
 
@@ -34,8 +34,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         if (appUser == null) {
             throw new UsernameNotFoundException(username);
         }
-        log.info("first this");
-        Collection<GrantedAuthority> grantedAuthorities = Collections.singleton(new SimpleGrantedAuthority(ROLE_PREFIX + appUser.getRole().toString()));
+        List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
+        grantedAuthorities.add(new SimpleGrantedAuthority(ROLE_PREFIX+appUser.getRole().toString()));
         log.info("the logged in user is {} {} {}", appUser.getUsername(), appUser.getPassword(), grantedAuthorities);
         return new User(appUser.getUsername(), appUser.getPassword(), grantedAuthorities);
     }

@@ -7,6 +7,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -14,7 +15,11 @@ import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.auth0.jwt.JWT;
 import static com.auth0.jwt.algorithms.Algorithm.HMAC512;
 import static com.bank.manager.security.SecurityConstants.*;
@@ -37,7 +42,8 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             return authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             credentials.getUsername(),
-                            credentials.getPassword()
+                            credentials.getPassword(),
+                            new ArrayList<>()
                     )
             );
         } catch (IOException e) {
@@ -50,9 +56,17 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                                             HttpServletResponse res,
                                             FilterChain chain,
                                             Authentication auth)  {
+
         log.info("fir auth hua {}", auth.getAuthorities());
+        List<String> authorities = new ArrayList<>();
+        for (GrantedAuthority authority : auth.getAuthorities()) {
+            authorities.add(authority.toString());
+        }
+        String authoritiesList = String.join(",", authorities);
         String token = JWT.create()
                 .withSubject(((User) auth.getPrincipal()).getUsername())
+                //adding authorities
+                .withClaim("authorities", authoritiesList)
                 .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .sign(HMAC512(SECRET.getBytes()));
         res.addHeader(HEADER_STRING, TOKEN_PREFIX + token);
